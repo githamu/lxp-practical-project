@@ -64,7 +64,7 @@ return [
 
     ],
 
-    'currency' => env('DEFAULT_CURRENCY', 'USD'),
+    'currency' => env('DEFAULT_CURRENCY', '円'),
     'currency_symbol' => env('CURRENCY_SYMBOL', '$')
 
 ];

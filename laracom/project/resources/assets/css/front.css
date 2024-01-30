@@ -333,7 +333,41 @@ li.menubar-cart a {
     border-radius: 3px;
     font-family: 'Lora', serif;
 }
-
+.product-price-area {
+    font-size: 18px;
+    font-weight: bold;
+    color: red;
+    margin-top: 20px;
+}
+.product-price {
+    font-size: 30px;
+}
+.product-postage {
+    font-size: 18px;
+    font-weight: bold;
+}
+.product-sku {
+    margin-top: 20px;
+}
+.quantity-header {
+    margin-top: 30px;
+}
+.cart-add-area {
+    display: flex;
+    gap: 14px;
+}
+.cart-quantity-input {
+    height: 40px;
+    color: black !important;
+    font-weight: bold !important;
+    border: 2px solid orange !important;
+}
+.cart-add-button {
+    margin-right: 30px;
+    height: 40px;
+    width: 300px;
+    font-weight: bold;
+}
 
 /* ************************
         OFFER
