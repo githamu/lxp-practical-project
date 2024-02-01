@@ -33,7 +33,7 @@
         <div class="product-description">
             <h1>{{ $product->name }}</h1>
             <br>
-            <span class="product-price-area"><span class="product-price">{{ number_format($product->price * 140) }}</span> {{ config('cart.currency') }}</span>
+            <span class="product-price-area"><span class="product-price">{{ number_format($product->price * 140) }}</span> {{ config('cart.yen_currency') }}</span>
             <span class="product-postage"> + 送料980円</span>
             <p class="product-sku">SKU : {{ $product->sku }}</p>
             <div class="description">{!! $product->description !!}</div>
