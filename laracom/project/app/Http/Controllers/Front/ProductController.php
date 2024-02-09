@@ -71,13 +71,8 @@ class ProductController extends Controller
 
     public function evaluationToStar($ev)
     {
-        $stars = "";
-        for ($i = 0; $i < $ev; $i++) {
-            $stars .= "★";
-        }
-        for ($i = 0; $i < 5 - $ev; $i++) {
-            $stars .= "☆";
-        }
+        $stars = str_repeat("★", $ev);
+        $stars .= str_repeat("☆", 5 - $ev);
         return $stars;
     }
 }
