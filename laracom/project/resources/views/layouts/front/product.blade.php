@@ -31,12 +31,19 @@
     </div>
     <div class="col-md-6">
         <div class="product-description">
-            <h1>{{ $product->name }}</h1>
-            <br>
-            <span class="product-price-area"><span class="product-price">{{ number_format($product->price * 140) }}</span> {{ config('cart.yen_currency') }}</span>
-            <span class="product-postage"> + 送料980円</span>
-            <p class="product-sku">SKU : {{ $product->sku }}</p>
-            <div class="description">{!! $product->description !!}</div>
+
+            <h1>
+                {{ $product->name }}
+                <small><span class="product-price">{{ $product->price * 140 }}</span><span
+                        class="product-symbol">{{ config('cart.currency_symbol') }}</span> +
+                    送料980{{ config('cart.currency_symbol') }}</small>
+            </h1>
+            <h3>SKU: {{ $product->sku }}</h3>
+            <div class="description">
+                {!! $product->description !!}
+            </div>
+
+            <hr>
             <div class="row">
                 <div class="col-md-12">
                     @include('layouts.errors-and-messages')
@@ -50,7 +57,6 @@
                                         <option value="{{ $productAttribute->id }}">
                                             @foreach ($productAttribute->attributesValues as $value)
                                                 {{ $value->attribute->name }} : {{ ucwords($value->value) }}
-                                                {{ json_encode($value) }}
                                             @endforeach
                                             @if (!is_null($productAttribute->sale_price))
                                                 ({{ config('cart.currency_symbol') }}
@@ -62,18 +68,58 @@
                                     @endforeach
                                 </select>
                             </div>
+                            <hr>
                         @endif
-                        <p class="quantity-header">数量</p>
-                        <div class="cart-add-area">
-                            <div class="form-group">
-                                <input type="text" class="form-control cart-quantity-input" name="quantity" id="quantity"
-                                    placeholder="Quantity" value="{{ old('quantity') }}" />
-                                <input type="hidden" name="product" value="{{ $product->id }}" />
-                            </div>
-                            <button type="submit" class="btn btn-warning cart-add-button"><i class="fa fa-cart-plus"></i> かごに追加
-                            </button>
+                        <div class="form-group">
+                            <label for="quantity">数量</label> <br />
+                            <input type="text" class="form-control" name="quantity" id="quantity"
+                                placeholder="Quantity" value="{{ old('quantity') }}" />
+                            <input type="hidden" name="product" value="{{ $product->id }}" />
+                            <button type="submit" class="btn btn-warning add-cart form-control"><i
+                                    class="fa fa-cart-plus"></i> カートに追加</button>
                         </div>
                     </form>
+
+                    <div class="evaluat">
+                        <div id="evaluations">
+                            @if (isset($evaluation))
+                                @foreach ($evaluation as $evaluat)
+                                    <div>
+                                        <h1>{!! $evaluat->evaluationStar !!}</h1>
+                                        <p class="reviews">{{ $evaluat->review }}</p>
+                                    </div>
+                                @endforeach
+                            @endif
+                        </div>
+                        @if (auth()->check())
+                            @if (session('success'))
+                                <p>評価とコメントを登録しました</p>
+                            @else
+                                <form action="{{ route('evaluation.store') }}" class="form-inline" id="evaluation_submit"
+                                    method="post">
+                                    {{ csrf_field() }}
+                                    <input type="hidden" name="product" value="{{ $product->id }}" />
+                                    <div>
+                                        <label for="evaluation_value">評価</label>
+                                        <br>
+                                        <input type="number" name="evaluation" id="evaluation_value" min="1"
+                                            max="5" value="5">
+                                    </div>
+                                    <div id="review_request_text_div">
+                                        <label for="review_text">レビュー</label>
+                                        <br>
+                                        <input type="text" name="review" id="review_text"
+                                            placeholder="レビューを入力してください">
+                                    </div>
+                                    <div>
+                                        <br>
+                                        <button type="submit" class="btn btn-warning" id="review_button"
+                                            disabled>登録</button>
+                                    </div>
+                                </form>
+                            @endif
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
@@ -85,10 +131,33 @@
             var productPane = document.querySelector('.product-cover');
             var paneContainer = document.querySelector('.product-cover-wrap');
 
+            const MIN_EVALUATION_VALUE = 1;
+            const MAX_EVALUATION_VALUE = 5;
+
+            const MIN_REVIEW_LENGTH = 1;
+            const MAX_REVIEW_LENGTH = 100;
+
             new Drift(productPane, {
                 paneContainer: paneContainer,
                 inlinePane: false
             });
+
+            $("#evaluation_value").on("input", valuatChangeEvent);
+            $("#review_text").on("input", valuatChangeEvent);
+
+            function valuatChangeEvent(e) {
+                $("#review_button").prop("disabled", !(checkEvaluatValue() && checkReviewLength()));
+            }
+
+            function checkEvaluatValue() {
+                const evaluatValue = $("#evaluation_value").val();
+                return evaluatValue && evaluatValue >= MIN_EVALUATION_VALUE && evaluatValue <= MAX_EVALUATION_VALUE;
+            }
+
+            function checkReviewLength() {
+                const review = $("#review_text").val();
+                return review.length >= MIN_REVIEW_LENGTH && review.length <= MAX_REVIEW_LENGTH;
+            }
         });
     </script>
 @endsection
