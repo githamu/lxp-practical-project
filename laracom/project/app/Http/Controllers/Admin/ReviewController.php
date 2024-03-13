@@ -3,13 +3,20 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Shop\Products\Review;
+use App\Shop\Reviews\Repositories\ReviewRepositoryInterface;
 
 class ReviewController extends Controller
 {
+    protected $review;
+
+    public function __construct(ReviewRepositoryInterface $review)
+    {
+        $this->review = $review;
+    }
+
     public function index()
     {
-        $reviews = Review::with('customer')->get();
+        $reviews = $this->review->getAll();
         return view('admin.reviews.list', ['reviews' => $reviews]);
     }
 }
